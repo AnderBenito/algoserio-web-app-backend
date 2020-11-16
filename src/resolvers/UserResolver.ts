@@ -1,3 +1,4 @@
+import { createAccessToken } from "./../utils/auth";
 import { User } from "./../entity/User";
 import {
 	Arg,
@@ -48,7 +49,7 @@ export class UserResolver {
 			const valid = await compare(password, user.password);
 			if (valid) {
 				return {
-					accessToken: "access!",
+					accessToken: createAccessToken(user),
 				};
 			} else {
 				throw new Error("Invalid username or password");
@@ -63,7 +64,8 @@ export class UserResolver {
 		@Arg("name") name: string,
 		@Arg("email") email: string,
 		@Arg("username") username: string,
-		@Arg("password") password: string
+		@Arg("password") password: string,
+		@Arg("isAdmin") isAdmin: boolean
 	) {
 		console.log(name, username, password);
 
@@ -77,6 +79,7 @@ export class UserResolver {
 				email,
 				username,
 				password: hashedPassword,
+				isAdmin,
 			});
 		} catch (error) {
 			return false;

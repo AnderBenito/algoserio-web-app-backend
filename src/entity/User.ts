@@ -34,6 +34,10 @@ export class User extends BaseEntity {
 	@Column("text")
 	password: string;
 
+	@Field()
+	@Column()
+	isAdmin: boolean;
+
 	@Field(() => [Points], { nullable: true })
 	@OneToMany(() => Points, (points) => points.user)
 	points?: Points[];
