@@ -2,6 +2,7 @@ import "reflect-metadata";
 import { PointsResolver } from "./resolvers/PointsResolver";
 import { UserResolver } from "./resolvers/UserResolver";
 import express from "express";
+import cookieParser from "cookie-parser";
 import { createConnection } from "typeorm";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
@@ -11,6 +12,7 @@ require("dotenv").config();
 	const app = express();
 	const PORT = process.env.PORT || 5000;
 
+	app.use(cookieParser());
 	//Connect to DB----------------------------------
 	await createConnection();
 
@@ -19,6 +21,7 @@ require("dotenv").config();
 		schema: await buildSchema({
 			resolvers: [UserResolver, PointsResolver],
 		}),
+		context: ({ req, res }) => ({ req, res }),
 	});
 
 	apolloServer.applyMiddleware({ app });
