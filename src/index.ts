@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import { router } from "./routes/RefreshToken";
 import { PointsResolver } from "./resolvers/PointsResolver";
 import { UserResolver } from "./resolvers/UserResolver";
 import express from "express";
@@ -13,6 +14,7 @@ require("dotenv").config();
 	const PORT = process.env.PORT || 5000;
 
 	app.use(cookieParser());
+	app.use("/auth/refresh_token", router);
 	//Connect to DB----------------------------------
 	await createConnection();
 
