@@ -4,6 +4,7 @@ import { PointsResolver } from "./resolvers/PointsResolver";
 import { UserResolver } from "./resolvers/UserResolver";
 import express from "express";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import { createConnection } from "typeorm";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
@@ -13,6 +14,12 @@ require("dotenv").config();
 	const app = express();
 	const PORT = process.env.PORT || 5000;
 
+	app.use(
+		cors({
+			origin: "http://localhost:3000",
+			credentials: true,
+		})
+	);
 	app.use(cookieParser());
 	app.use("/auth/refresh_token", router);
 	//Connect to DB----------------------------------
@@ -26,7 +33,7 @@ require("dotenv").config();
 		context: ({ req, res }) => ({ req, res }),
 	});
 
-	apolloServer.applyMiddleware({ app });
+	apolloServer.applyMiddleware({ app, cors: false });
 
 	//----------------------------------------------------------
 	app.listen(PORT, () => console.log("Express listening on port! ", PORT));
