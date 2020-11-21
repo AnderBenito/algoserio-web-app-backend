@@ -32,6 +32,7 @@ class LoginResponse {
 	@Field()
 	accessToken: string;
 }
+
 @Resolver(User)
 export class UserResolver {
 	@Query(() => String)
@@ -41,10 +42,18 @@ export class UserResolver {
 		return "Hello User";
 	}
 
+	@Query(() => User)
+	@UseMiddleware(isAuth)
+	async getCurrentUser(@Ctx() { payload }: MyContext) {
+		return await User.findOne({ id: payload?.userId });
+	}
+
 	@Query(() => [User])
 	async getAllUsers() {
 		return await User.find({ relations: ["points"] });
 	}
+
+	//Mutations-----------------------------------------------------------
 
 	@Mutation(() => LoginResponse)
 	async loginUser(
@@ -58,6 +67,8 @@ export class UserResolver {
 			const valid = await compare(password, user.password);
 			if (valid) {
 				//Login successfull
+				console.log("Loging successfull");
+				console.log(user);
 				sendRefreshToken(res, createRefreshToken(user));
 				return {
 					accessToken: createAccessToken(user),
@@ -102,6 +113,39 @@ export class UserResolver {
 		} catch (error) {
 			return false;
 		}
+		return true;
+	}
+
+	@Mutation(() => Boolean)
+	@UseMiddleware(isAuth)
+	async changeUserPassword(
+		@Arg("oldPassword") oldPassword: string,
+		@Arg("newPassword") newPassword: string,
+		@Ctx() { payload }: MyContext
+	) {
+		const user = await User.findOne({ id: payload?.userId });
+
+		if (!user) {
+			throw new Error(`No user with id ${payload?.userId} found`);
+		}
+
+		const valid = await compare(oldPassword, user.password!);
+
+		if (!valid) {
+			throw new Error(`Wrong old password`);
+		}
+
+		const salt = await genSalt(10);
+		const hashedPassword = await hash(newPassword, salt);
+
+		user.password = hashedPassword;
+		try {
+			await User.save(user);
+		} catch (e) {
+			console.log(e);
+			return false;
+		}
+
 		return true;
 	}
 }

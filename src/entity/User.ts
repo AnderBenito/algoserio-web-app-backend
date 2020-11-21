@@ -13,7 +13,7 @@ import { Field, ObjectType } from "type-graphql";
 export class User extends BaseEntity {
 	@Field(() => String)
 	@PrimaryGeneratedColumn("uuid")
-	id: number;
+	id: string;
 
 	@Field()
 	@Column("timestamp")
@@ -41,4 +41,8 @@ export class User extends BaseEntity {
 	@Field(() => [Points], { nullable: true })
 	@OneToMany(() => Points, (points) => points.user)
 	points?: Points[];
+
+	@Field()
+	@Column("int", { default: 0 })
+	tokenVersion: number;
 }
