@@ -61,14 +61,12 @@ export class UserResolver {
 		@Arg("password") password: string,
 		@Ctx() { res }: MyContext
 	) {
-		//console.log(res);
 		const user = await User.findOne({ username });
 		if (user) {
 			const valid = await compare(password, user.password);
 			if (valid) {
 				//Login successfull
 				console.log("Loging successfull");
-				console.log(user);
 				sendRefreshToken(res, createRefreshToken(user));
 				return {
 					accessToken: createAccessToken(user),
@@ -82,6 +80,13 @@ export class UserResolver {
 	}
 
 	@Mutation(() => Boolean)
+	async logOutUser(@Ctx() { res }: MyContext) {
+		//sendRefreshToken(res, "");
+		res.clearCookie("jid");
+		return true;
+	}
+
+	@Mutation(() => Boolean)
 	async registerUser(
 		@Arg("name") name: string,
 		@Arg("email") email: string,
@@ -89,8 +94,6 @@ export class UserResolver {
 		@Arg("password") password: string,
 		@Arg("isAdmin", { defaultValue: false }) isAdmin?: boolean
 	) {
-		console.log(name, username, password);
-
 		//Check if user exists in database-----------------------------
 		let user = await User.findOne({ where: { email } });
 		if (user) throw new Error(`User with email ${email} already exists!`);
@@ -139,6 +142,7 @@ export class UserResolver {
 		const hashedPassword = await hash(newPassword, salt);
 
 		user.password = hashedPassword;
+		user.tokenVersion += 1;
 		try {
 			await User.save(user);
 		} catch (e) {
