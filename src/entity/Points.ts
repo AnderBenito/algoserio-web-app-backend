@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "type-graphql";
+import { Field, Float, ObjectType } from "type-graphql";
 import { User } from "./User";
 import {
 	BaseEntity,
@@ -19,8 +19,8 @@ export class Points extends BaseEntity {
 	@Column("timestamp")
 	createdAt: Date;
 
-	@Field()
-	@Column()
+	@Field(() => Float)
+	@Column("float")
 	amount: number;
 
 	@Field()

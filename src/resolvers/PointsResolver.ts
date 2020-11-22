@@ -32,7 +32,7 @@ export class PointsResolver {
 	@Mutation(() => Boolean)
 	async addPoints(
 		@Arg("username") username: string,
-		@Arg("ammount") amount: number,
+		@Arg("amount") amount: number,
 		@Arg("reason") reason: string
 	) {
 		const user = await User.findOne({ where: { username: username } });
