@@ -31,6 +31,9 @@ import { hash, genSalt, compare } from "bcrypt";
 class LoginResponse {
 	@Field()
 	accessToken: string;
+
+	@Field()
+	user: User;
 }
 
 @Resolver(User)
@@ -70,6 +73,7 @@ export class UserResolver {
 				sendRefreshToken(res, createRefreshToken(user));
 				return {
 					accessToken: createAccessToken(user),
+					user: user,
 				};
 			} else {
 				throw new Error("Invalid username or password");
