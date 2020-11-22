@@ -36,6 +36,15 @@ class LoginResponse {
 	user: User;
 }
 
+@ObjectType()
+class TotalPointsPerUserResponse {
+	@Field()
+	user: User;
+
+	@Field()
+	totalPoints: number;
+}
+
 @Resolver(User)
 export class UserResolver {
 	@Query(() => String)
@@ -56,8 +65,29 @@ export class UserResolver {
 		return await User.find({ relations: ["points"] });
 	}
 
-	//Mutations-----------------------------------------------------------
+	@Query(() => [TotalPointsPerUserResponse])
+	async getTotalPointsPerUSer() {
+		const users = await User.find({ relations: ["points"] });
 
+		const userTotal = users.map((user) => {
+			let totalPoints;
+			if (!user.points) {
+				totalPoints = 0;
+			} else {
+				let pointsArray = user.points.map((point) => point.amount);
+				totalPoints = pointsArray.reduce((a, b) => a + b, 0);
+			}
+			return {
+				user: user,
+
+				totalPoints: totalPoints,
+			};
+		});
+
+		return userTotal;
+	}
+
+	//Mutations-----------------------------------------------------------
 	@Mutation(() => LoginResponse)
 	async loginUser(
 		@Arg("username") username: string,
