@@ -77,6 +77,7 @@ export class UserResolver {
 		@Arg("order", { nullable: true, defaultValue: "ASC" }) order?: OrderTypes
 	) {
 		return await User.find({
+			relations: ["points"],
 			order: {
 				name: order,
 			},

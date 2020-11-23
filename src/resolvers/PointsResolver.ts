@@ -21,6 +21,7 @@ export class PointsResolver {
 		@Arg("order", { nullable: true, defaultValue: "ASC" }) order?: OrderTypes
 	) {
 		return await Points.find({
+			relations: ["user"],
 			order: {
 				createdAt: order,
 			},
