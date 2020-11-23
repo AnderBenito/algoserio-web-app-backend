@@ -27,6 +27,11 @@ import { hash, genSalt, compare } from "bcrypt";
 // 	password: string;
 // }
 
+enum OrderTypes {
+	ASC = "ASC",
+	DESC = "DESC",
+}
+
 @ObjectType()
 class LoginResponse {
 	@Field()
@@ -63,6 +68,21 @@ export class UserResolver {
 	@Query(() => [User])
 	async getAllUsers() {
 		return await User.find({ relations: ["points"] });
+	}
+
+	@Query(() => [User])
+	async getPaginatedUsers(
+		@Arg("skip", { nullable: true }) skip?: number,
+		@Arg("take", { nullable: true }) take?: number,
+		@Arg("order", { nullable: true, defaultValue: "ASC" }) order?: OrderTypes
+	) {
+		return await User.find({
+			order: {
+				name: order,
+			},
+			skip: skip,
+			take: take,
+		});
 	}
 
 	@Query(() => [TotalPointsPerUserResponse])

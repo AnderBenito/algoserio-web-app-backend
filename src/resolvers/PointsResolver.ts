@@ -2,11 +2,31 @@ import { User } from "./../entity/User";
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import { Points } from "./../entity/Points";
 
+enum OrderTypes {
+	ASC = "ASC",
+	DESC = "DESC",
+}
+
 @Resolver(Points)
 export class PointsResolver {
 	@Query(() => [Points])
 	async getAllPoints() {
 		return await Points.find({ relations: ["user"] });
+	}
+
+	@Query(() => [Points])
+	async getPaginatedPoints(
+		@Arg("skip", { nullable: true }) skip?: number,
+		@Arg("take", { nullable: true }) take?: number,
+		@Arg("order", { nullable: true, defaultValue: "ASC" }) order?: OrderTypes
+	) {
+		return await Points.find({
+			order: {
+				createdAt: order,
+			},
+			skip: skip,
+			take: take,
+		});
 	}
 
 	@Query(() => [Points])
