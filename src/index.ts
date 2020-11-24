@@ -1,3 +1,4 @@
+import { createDevConnection } from "./utils/createDevConnection";
 import "reflect-metadata";
 import { router } from "./routes/RefreshToken";
 import { PointsResolver } from "./resolvers/PointsResolver";
@@ -11,6 +12,7 @@ import { buildSchema } from "type-graphql";
 require("dotenv").config();
 
 (async () => {
+	console.log(process.env.NODE_ENV);
 	const app = express();
 	const PORT = process.env.PORT || 5000;
 
@@ -23,7 +25,11 @@ require("dotenv").config();
 	app.use(cookieParser());
 	app.use("/auth/refresh_token", router);
 	//Connect to DB----------------------------------
-	await createConnection();
+	if (process.env.NODE_ENV === "production") {
+		await createConnection();
+	} else {
+		await createDevConnection();
+	}
 
 	//Initialize Apollo Server----------------------------------
 	const apolloServer = new ApolloServer({

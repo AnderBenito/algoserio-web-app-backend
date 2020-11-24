@@ -50,6 +50,8 @@ export class PointsResolver {
 		});
 	}
 
+	//Mutations ----------------------------------
+
 	@Mutation(() => Boolean)
 	async addPoints(
 		@Arg("username") username: string,
@@ -67,6 +69,38 @@ export class PointsResolver {
 			return true;
 		} else {
 			throw new Error(`User with username: ${username} not found`);
+		}
+	}
+
+	@Mutation(() => Boolean)
+	async deletePoints(@Arg("id") id: string) {
+		try {
+			await Points.delete(id);
+			return true;
+		} catch (e) {
+			console.log(e);
+			return false;
+		}
+	}
+
+	@Mutation(() => Points)
+	async updatePoints(
+		@Arg("id") id: string,
+		@Arg("amount", { nullable: true }) amount: number,
+		@Arg("reason", { nullable: true }) reason: string
+	) {
+		let points = (await Points.findOne({ id: id })) as Points;
+		if (points) {
+			points.amount = amount ? amount : points.amount;
+			points.reason = reason ? reason : points.reason;
+		} else {
+			throw new Error("Couldnt find points");
+		}
+		try {
+			return await Points.save(points);
+		} catch (e) {
+			console.log(e);
+			throw new Error("Couldnt find points");
 		}
 	}
 }

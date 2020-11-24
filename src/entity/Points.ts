@@ -11,9 +11,9 @@ import {
 @ObjectType()
 @Entity("points")
 export class Points extends BaseEntity {
-	@Field()
-	@PrimaryGeneratedColumn()
-	id: number;
+	@Field(() => String)
+	@PrimaryGeneratedColumn("uuid")
+	id: string;
 
 	@Field()
 	@Column("timestamp")
