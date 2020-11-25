@@ -9,7 +9,7 @@ RUN yarn install --production
 
 COPY ./dist ./dist
 COPY ./.env ./.env
-COPY ./ormconfig-prod.json ./ormconfig.json
+COPY ./ormconfig.js ./ormconfig.js
 
 ENV NODE_ENV production
 
