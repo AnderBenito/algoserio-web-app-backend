@@ -2,9 +2,8 @@ import { createConnection, getConnectionOptions } from "typeorm";
 
 export const createDevConnection = async () => {
 	const connectionOptions = await getConnectionOptions();
+	console.log(connectionOptions);
 	Object.assign(connectionOptions, {
-		host: "localhost",
-		port: 2345,
 		entities: ["src/entity/*.ts"],
 		migrations: ["src/migration/*.ts"],
 		subscribers: ["src/subscriber/*.ts"],
@@ -13,7 +12,6 @@ export const createDevConnection = async () => {
 			migrationsDir: "src/migration",
 			subscribersDir: "src/subscriber",
 		},
-		logging: false,
 	});
 	console.log(connectionOptions);
 
