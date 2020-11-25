@@ -13,6 +13,6 @@ COPY ./ormconfig.js ./ormconfig.js
 
 ENV NODE_ENV production
 
-EXPOSE $PORT
+# EXPOSE $PORT
 
 CMD ["node", "dist/index.js"]
