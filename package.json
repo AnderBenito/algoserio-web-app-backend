@@ -32,6 +32,7 @@
 	},
 	"scripts": {
 		"start": "nodemon --exec ts-node src/index.ts",
-		"start-comp": "nodemon dist/index.js"
+		"start-comp": "nodemon dist/index.js",
+		"deploy": "node dist/index.js"
 	}
 }
