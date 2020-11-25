@@ -33,6 +33,9 @@ require("dotenv").config();
         credentials: true,
     }));
     app.use(cookie_parser_1.default());
+    app.get("/", (_, res) => {
+        res.send("Hello World");
+    });
     app.use("/auth/refresh_token", RefreshToken_1.router);
     if (process.env.NODE_ENV === "production") {
         yield typeorm_1.createConnection();

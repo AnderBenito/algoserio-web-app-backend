@@ -23,6 +23,11 @@ require("dotenv").config();
 		})
 	);
 	app.use(cookieParser());
+
+	app.get("/", (_, res) => {
+		res.send("Hello World");
+	});
+
 	app.use("/auth/refresh_token", router);
 	//Connect to DB----------------------------------
 	if (process.env.NODE_ENV === "production") {
