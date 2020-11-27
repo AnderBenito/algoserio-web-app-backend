@@ -30,11 +30,16 @@ export class PointsResolver {
 		});
 	}
 
+	@Query(() => Points)
+	async getPointsById(@Arg("id") id: string) {
+		return await Points.findOne({ id });
+	}
+
 	@Query(() => [Points])
-	async getPointsById(@Arg("id") id: number) {
+	async getPointsByUserId(@Arg("userId") userId: string) {
 		return await Points.find({
 			relations: ["user"],
-			where: { user: { id: id } },
+			where: { user: { id: userId } },
 		});
 	}
 
