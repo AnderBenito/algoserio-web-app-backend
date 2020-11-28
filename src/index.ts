@@ -18,7 +18,10 @@ require("dotenv").config();
 
 	app.use(
 		cors({
-			origin: "http://localhost:3000",
+			origin:
+				process.env.NODE_ENV === "production"
+					? "https://algoserio.herokuapp.com"
+					: "http://localhost:3000",
 			credentials: true,
 		})
 	);
