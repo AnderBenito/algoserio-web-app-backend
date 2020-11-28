@@ -1,3 +1,4 @@
+import { Gala } from "./../entity/Gala";
 import { User } from "./../entity/User";
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import { Points } from "./../entity/Points";
@@ -60,16 +61,19 @@ export class PointsResolver {
 	@Mutation(() => Boolean)
 	async addPoints(
 		@Arg("username") username: string,
+		@Arg("galaId") galaId: string,
 		@Arg("amount") amount: number,
 		@Arg("reason") reason: string
 	) {
 		const user = await User.findOne({ where: { username: username } });
+		const gala = await Gala.findOne({ id: galaId });
 		if (user) {
 			await Points.insert({
 				createdAt: new Date(),
 				amount,
 				reason,
 				user,
+				gala,
 			});
 			return true;
 		} else {

@@ -1,3 +1,4 @@
+import { GalaResolver } from "./resolvers/GalaResolver";
 import { createDevConnection } from "./utils/createDevConnection";
 import "reflect-metadata";
 import { router } from "./routes/RefreshToken";
@@ -42,7 +43,7 @@ require("dotenv").config();
 	//Initialize Apollo Server----------------------------------
 	const apolloServer = new ApolloServer({
 		schema: await buildSchema({
-			resolvers: [UserResolver, PointsResolver],
+			resolvers: [UserResolver, PointsResolver, GalaResolver],
 		}),
 		context: ({ req, res }) => ({ req, res }),
 	});

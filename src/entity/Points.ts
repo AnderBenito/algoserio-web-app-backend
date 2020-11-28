@@ -1,5 +1,6 @@
 import { Field, Float, ObjectType } from "type-graphql";
 import { User } from "./User";
+import { Gala } from "./Gala";
 import {
 	BaseEntity,
 	Column,
@@ -30,4 +31,8 @@ export class Points extends BaseEntity {
 	@Field(() => User, { nullable: true })
 	@ManyToOne(() => User, (user) => user.points, { onDelete: "CASCADE" })
 	user?: User;
+
+	@Field(() => Gala, { nullable: true })
+	@ManyToOne(() => Gala, (gala) => gala.points, { onDelete: "CASCADE" })
+	gala?: Gala;
 }
