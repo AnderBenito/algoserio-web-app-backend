@@ -6,7 +6,7 @@ export const sendRefreshToken = (res: Response, token: string) => {
 		secure: process.env.NODE_ENV === "production",
 		domain:
 			process.env.NODE_ENV === "production"
-				? "https://algoserio.herokuapp.com/"
-				: "http://localhost:5000",
+				? "algoserio.herokuapp.com"
+				: "localhost",
 	});
 };
