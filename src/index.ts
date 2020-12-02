@@ -1,3 +1,4 @@
+import { corsOptions } from "./corsOptions";
 import { GalaResolver } from "./resolvers/GalaResolver";
 import { createDevConnection } from "./utils/createDevConnection";
 import "reflect-metadata";
@@ -17,15 +18,7 @@ require("dotenv").config();
 	const app = express();
 	const PORT = process.env.PORT || 5000;
 
-	app.use(
-		cors({
-			origin:
-				process.env.NODE_ENV === "production"
-					? "https://algoserio.herokuapp.com"
-					: "http://localhost:3000",
-			credentials: true,
-		})
-	);
+	app.use(cors(corsOptions));
 	app.use(cookieParser());
 
 	app.get("/", (_, res) => {
