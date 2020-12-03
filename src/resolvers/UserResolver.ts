@@ -104,6 +104,7 @@ export class UserResolver {
 				totalPoints: totalPoints,
 			};
 		});
+		userTotal.sort((a, b) => b.totalPoints - a.totalPoints);
 
 		return userTotal;
 	}
