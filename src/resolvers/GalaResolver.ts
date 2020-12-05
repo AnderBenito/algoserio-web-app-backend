@@ -8,6 +8,21 @@ export class GalaResolver {
 		return await Gala.find({ relations: ["points", "points.user"] });
 	}
 
+	@Query(() => Gala)
+	async getAllGalaPoints(@Arg("id") id: string) {
+		let gala = null;
+
+		try {
+			gala = await Gala.findOne({
+				where: { id },
+				relations: ["points", "points.user"],
+			});
+			return gala;
+		} catch (error) {
+			throw new Error(`Gala with ID ${id} not found`);
+		}
+	}
+
 	//Mutations---------------------------------------------
 	@Mutation(() => Boolean)
 	async addGala(
