@@ -1,3 +1,4 @@
+import { TotalPointsPerUserResponse } from "./responses";
 import { isAuth } from "./../middleware/isAuth";
 import { sendRefreshToken } from "./../utils/sendRefreshToken";
 import { MyContext } from "./../models/MyContext";
@@ -14,6 +15,7 @@ import {
 	UseMiddleware,
 } from "type-graphql";
 import { hash, genSalt, compare } from "bcrypt";
+import { getRepository } from "typeorm";
 
 // @InputType()
 // class GetRegisterArgs {
@@ -41,15 +43,6 @@ class LoginResponse {
 	user: User;
 }
 
-@ObjectType()
-class TotalPointsPerUserResponse {
-	@Field()
-	user: User;
-
-	@Field()
-	totalPoints: number;
-}
-
 @Resolver(User)
 export class UserResolver {
 	@Query(() => String)
@@ -68,6 +61,16 @@ export class UserResolver {
 	@Query(() => [User])
 	async getAllUsers() {
 		return await User.find({ relations: ["points"] });
+	}
+
+	@Query(() => [User])
+	async getAllUsersByGala(@Arg("galaId") galaId: string) {
+		return await getRepository(User)
+			.createQueryBuilder("user")
+			.leftJoinAndSelect("user.points", "points")
+			.leftJoinAndSelect("points.gala", "gala")
+			.where("gala.id = :galaId", { galaId })
+			.getMany();
 	}
 
 	@Query(() => [User])

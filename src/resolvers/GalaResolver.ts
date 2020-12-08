@@ -1,5 +1,8 @@
+import { TotalPointsPerUserResponse } from "./responses";
+import { User } from "./../entity/User";
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import { Gala } from "./../entity/Gala";
+import { getRepository } from "typeorm";
 
 @Resolver(Gala)
 export class GalaResolver {
@@ -21,6 +24,34 @@ export class GalaResolver {
 		} catch (error) {
 			throw new Error(`Gala with ID ${id} not found`);
 		}
+	}
+
+	@Query(() => [TotalPointsPerUserResponse])
+	async getGalaTotalPoints(@Arg("id") id: string) {
+		const users = await getRepository(User)
+			.createQueryBuilder("user")
+			.leftJoinAndSelect("user.points", "points")
+			.leftJoinAndSelect("points.gala", "gala")
+			.where("gala.id = :id", { id: id })
+			.getMany();
+
+		const userTotal = users.map((user) => {
+			let totalPoints;
+			if (!user.points) {
+				totalPoints = 0;
+			} else {
+				let pointsArray = user.points.map((point) => point.amount);
+				totalPoints = pointsArray.reduce((a, b) => a + b, 0);
+			}
+			return {
+				user: user,
+
+				totalPoints: totalPoints,
+			};
+		});
+		userTotal.sort((a, b) => b.totalPoints - a.totalPoints);
+
+		return userTotal;
 	}
 
 	//Mutations---------------------------------------------
