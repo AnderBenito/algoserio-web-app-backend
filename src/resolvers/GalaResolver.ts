@@ -16,10 +16,17 @@ export class GalaResolver {
 		let gala = null;
 
 		try {
-			gala = await Gala.findOne({
-				where: { id },
-				relations: ["points", "points.user"],
-			});
+			// gala = await Gala.findOne({
+			// 	where: { id },
+			// 	relations: ["points", "points.user"],
+			// });
+			gala = await getRepository(Gala)
+				.createQueryBuilder("gala")
+				.where("gala.id = :id", { id: id })
+				.leftJoinAndSelect("gala.points", "points")
+				.leftJoinAndSelect("points.user", "user")
+				.orderBy("points.createdAt", "DESC")
+				.getOne();
 			return gala;
 		} catch (error) {
 			throw new Error(`Gala with ID ${id} not found`);
