@@ -95,11 +95,13 @@ export class PointsResolver {
 	@Mutation(() => Points)
 	async updatePoints(
 		@Arg("id") id: string,
+		@Arg("createdAt", { nullable: true }) createdAt: string,
 		@Arg("amount", { nullable: true }) amount: number,
 		@Arg("reason", { nullable: true }) reason: string
 	) {
 		let points = (await Points.findOne({ id: id })) as Points;
 		if (points) {
+			points.createdAt = createdAt ? new Date(createdAt) : points.createdAt;
 			points.amount = amount ? amount : points.amount;
 			points.reason = reason ? reason : points.reason;
 		} else {
